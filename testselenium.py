@@ -19,27 +19,26 @@ os.environ['PATH'] += os.pathsep + chrome_driver_path
 # Crie o driver com as opções configuradas
 driver = webdriver.Chrome(options=options)
 
+# Espera implícita por 10 segundos
+driver.implicitly_wait(10)
+
 # Abra o site
-driver.get('https://www.b3.com.br/pt_br/market-data-e-indices/indices/indices-de-segmentos-e-setoriais/indice-agronegocio-free-float-setorial-agfs-composicao-da-carteira.htm')
+driver.get('https://www.b3.com.br/pt_br/market-data-e-indices/indices/indices-de-segmentos-e-setoriais/indice-financeiro-ifnc-composicao-da-carteira.htm')
 
-# Espere até que o botão de download esteja presente na página
-aceitar_button = WebDriverWait(driver, 20).until(
-    EC.presence_of_element_located((By.XPATH, '//*[@id="onetrust-accept-btn-handler"]'))
+# Aceitar cookies
+aceitar_button = WebDriverWait(driver, 40).until(
+    EC.element_to_be_clickable((By.ID, 'onetrust-accept-btn-handler'))
 )
-
-# Clique no botão de download
 aceitar_button.click()
 
-# Espere até que o botão de download esteja presente na página
-download_button = WebDriverWait(driver, 20).until(
-    EC.presence_of_element_located((By.XPATH, '//*[@id="divContainerIframeB3"]/div/div[1]/form/div[2]/div/div[2]/div/div/div[1]/div[2]/p/a'))
-)
+# Encontre o botão de download
+download_button = driver.find_element(By.XPATH, '//*[@id="divContainerIframeB3"]/div/div[1]/form/div[2]/div/div[2]/div/div/div[1]/div[2]/p/a')
 
-# Clique no botão de download
-download_button.click()
+# Clique no botão de download usando JavaScript
+driver.execute_script("arguments[0].click();", download_button)
 
 # Aguarde o download ser concluído
-time.sleep(10)  # Isso pode variar dependendo do tamanho do arquivo
+time.sleep(20)  # Isso pode variar dependendo do tamanho do arquivo
 
 # Feche o navegador
 driver.quit()
